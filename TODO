@@ -1,5 +1,18 @@
-Tasks from 1-7
+1. when using non interactive mode handle new lines [DONE]
+2. on task 8, use less read by using a buffer  [DONE]
+3. On task 12, handle errors well and print to sterr when found
+4. On task 16, make sure the aliases are also read and write to config files rather than just temporary linked listes
+5. Handle variables $$, *, and so on only $? and path variables work correctly
+	Handle other cases like *(file expansion and letter expansion) "" \ '' and all that good stuff
+6. pipes, redirections, stdins
+7. Handle arrows, handle tabs (autocomplete), 
+8.handle error detection in codes like "&& ls" or "||" and things like this,
+9. displaying the current directory, displaying color
+10.nice messages like No command 'pid' found, but there are 20 similar ones
+11. strict type checks in each functino that takes possible user inputs
+12. Make more builtins like unalias and more
+
+13. Make maney os the system funciton custom, like FORK, EXECVE and so on...
+14. TRY to make linux kernam independant kernal if that is possible
 Improve man page and read me
-Clean up repo
-Try advanced taks
 Clean up repo

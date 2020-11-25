@@ -1,2 +1,4 @@
 /tmp
 generate-authors.sh
+/backup
+.gitignore
