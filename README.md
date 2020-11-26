@@ -17,7 +17,7 @@ The General can be compiled with GCC >=4.8.5.
 ## Example of how to launch the shell after compiling:
 `./gbk`
 
-* Output: prompt to terminal: `$ `
+* Output: prompt to terminal: `cisfun$ `
 
 ## Syntax
 The shell works by using commands given by the user input. The shell commands take in the following syntax: `command name {arguments}[;||&& other command]`. The shell executes a command after it is written by user using the command followed by the arguments until all the commands in one line are complered
@@ -35,14 +35,14 @@ If you want a controlled install you can clone this repository to your local mac
 ### Builtins
 GBK also contains a couple of built-in functions, which are commands that are within the shell itself. Some of the built-ins are 
 |----------|--------------------------------------------|
-`alias` | to create aliases|
-`help` | to get help on built-in functions |
-`cd` | change working directories|
-`history` | list of commands that have already been typed|
-`env` and `printenv` | prints environmental variables|
-`set` | sets new environmental variables|
-`exit` | exit out of gbk|
-`unset` | unsets envrionmental variables|
+|`alias` | to create aliases|
+|`help` | to get help on built-in functions |
+|`cd` | change working directories|
+|`history` | list of commands that have already been typed|
+|`env` and `printenv` | prints environmental variables|
+|`set` | sets new environmental variables|
+|`exit` | exit out of gbk|
+|`unset` | unsets envrionmental variables|
 
 
 ### Exiting commands and the shell

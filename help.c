@@ -1,29 +1,38 @@
 #include "help.h"
 
 /**
-*phelp - prints help for arg
-*@arg: string whose pirnt to be printed
-*/
+ *phelp - prints help for arg
+ *@arg: string whose pirnt to be printed
+ */
 void phelp(char *arg)
 {
+	int fd = 1;
+
+	_write(-1, NULL, 0);/*open a printed*/
+
 	if (!arg)
-		printf(ghelp);
+		_write(1, ghelp, _strlen(ghelp));
 	else if (!_strcmp(arg, "help"))
-		printf(help_h);
+		_write(1, help_h, _strlen(help_h));
 	else if (!_strcmp(arg, "set"))
-		printf(set_h);
+		_write(1, set_h, _strlen(set_h));
 	else if (!_strcmp(arg, "unset"))
-		printf(unset_h);
+		_write(1, unset_h, _strlen(unset_h));
 	else if (!_strcmp(arg, "history"))
-		printf(history_h);
+		_write(1, history_h, _strlen(history_h));
 	else if (!_strcmp(arg, "env"))
-		printf(env_h);
+		_write(1, env_h, _strlen(env_h));
 	else if (!_strcmp(arg, "cd"))
-		printf(cd_h);
+		_write(1, cd_h, _strlen(cd_h));
 	else if (!_strcmp(arg, "alias"))
-		printf(alias_h);
+		_write(1, alias_h, _strlen(alias_h));
 	else if (!_strcmp(arg, "exit"))
-		printf(exit_h);
+		_write(1, exit_h, _strlen(exit_h));
 	else
-		printf("No help found for %s", arg);
+	{
+		_write(2, "No help found for", 17), fd = 2;
+		_write(2, arg, _strlen(arg));
+		_write(2, "\n", 1);
+	}
+	_write(fd, NULL, 0);
 }

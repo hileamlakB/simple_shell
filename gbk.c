@@ -14,26 +14,28 @@ int main(int argc, char **argv, char **argp)
 {
 	char *cmd = NULL, **cmds = NULL;
 	size_t cmdlen = 0;
-	int mode = !isatty(0), i = 0, cmdnum = 1;
-	struct sigaction sa;
+	int mode = !isatty(0), i = 0, cmdnum = 1, inputs = 0;
 	alias *head = NULL;
 
-	environ = sarrdup(environ);
+	/*initialize environmental variables*/
+	environ = sarrdup(argp);
 	if (argc > 1)
 	{
 		runscript(argv[1]);
 		exit(0);
 	}
-	(void)argp;
-
-	sa.sa_handler = handlerc, sa.sa_flags = 0;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
+	/*initialize erro function*/
+	perr(argv[0], &inputs, NULL);
+	/*initialize signal handler*/
+	signal(SIGINT, handlerc);
 	while (1)
 	{
-		cmd = NULL, cmds = NULL, getinput(&cmd, &cmdlen, &cmds);
+		/*get command and parse based on ;*/
+		cmd = NULL, cmds = NULL, getinput(&cmd, &cmdlen, &cmds, 0);
 		cmdnum = arlen(cmds), i = 0;
 		free(cmd);
+		inputs++;/*increase the number of commands accepted*/
+		/*execute all the commands one by one*/
 		while (i < cmdnum)
 			xcmd(cmds, i, &head), i++;
 		if (cmdnum > 0)
@@ -51,7 +53,7 @@ int main(int argc, char **argv, char **argp)
  */
 static void handlerc(int signum)
 {
-	write(1, "\n", 1);
+	write(1, "\n$ ", 3);
 	(void)signum;
 }
 
@@ -63,7 +65,7 @@ static void handlerc(int signum)
  *@childstat: the status of the execution of the current command
  *node
  */
-inline void cmdmv(cmdnode **head, int childstat)
+void cmdmv(cmdnode **head, int childstat)
 {
 	cmdnode *tmp = NULL;
 
@@ -110,7 +112,7 @@ inline void cmdmv(cmdnode **head, int childstat)
  *@index: current command index
  *@aliashead: head of the laias list
  */
-inline void xcmd(char **cmd_l, int index, alias **aliashead)
+void xcmd(char **cmd_l, int index, alias **aliashead)
 {
 	char **tmp = NULL, *cmds = cmd_l[index];
 	int childid, *binstat, exitstat;
@@ -143,7 +145,7 @@ inline void xcmd(char **cmd_l, int index, alias **aliashead)
 			childid = fork();
 			if (childid < 0)
 			{
-				perror("ERROR: coudn't creat a child proccess");
+				perr(NULL, NULL, "Coudn't creat a child proccess");
 				exit(-1);
 			}
 			if (childid == 0)

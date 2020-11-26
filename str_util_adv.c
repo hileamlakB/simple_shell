@@ -41,8 +41,7 @@ int _getline(char **lnptr, size_t *size, int fd)
 	if (!mode)
 	{
 		tmp = srealloc(*lnptr, _strlen(*lnptr) + 3);
-		if (!tmp)
-			exit(-1);
+		*lnptr = tmp;
 		(*lnptr)[len] = '\n', (*lnptr)[len + 1] = '\0';
 	}
 	return (len);

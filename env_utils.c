@@ -48,7 +48,7 @@ int _setenv(const char *name, const char *value, int overwrite)
 	if (name == NULL || name[0] == '\0' || value == NULL)
 		return (-1);
 
-	if (getenv(name) != NULL && overwrite == 0)
+	if (_getenv(name) != NULL && overwrite == 0)
 		return (0);
 	if (overwrite)
 		_unsetenv(name);
@@ -101,11 +101,41 @@ void _printenv(void)
 {
 	char **_env = environ;
 
+	_write(-1, NULL, 0);
 	while (*_env)
 	{
-		printf("%s\n", *_env);
+		_write(1, *_env, _strlen(*_env));
+		_write(1, "\n", 1);
 		_env++;
 	}
+	_write(1, NULL, 0);
 }
 
 
+
+/**
+ * _getenv - Returns pointer to value associated with name, if any, else NULL.
+ *@name: the key
+ *Return: the value.
+ */
+char *_getenv(const char *name)
+{
+	int len, i;
+	const char *np;
+	char **p, *cp;
+
+	if (name == NULL || environ == NULL)
+		return (NULL);
+	for (np = name; *np && *np != '='; ++np)
+		;
+	len = np - name;
+	for (p = environ; (cp = *p) != NULL; ++p)
+	{
+		for (np = name, i = len; i && *cp; i--)
+			if (*cp++ != *np++)
+				break;
+		if (i == 0 && *cp++ == '=')
+			return (cp);
+	}
+	return (NULL);
+}

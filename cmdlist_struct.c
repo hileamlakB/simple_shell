@@ -92,7 +92,13 @@ int print_cmdnodes(cmdnode *head)
 		return (-1);
 	while (head)
 	{
-		printf("cmd %s, op'%s'\n", head->cmd, head->op);
+		_write(-1, NULL, 0);
+		_write(1, "cmd ", 4);
+		_write(1, head->cmd, _strlen(head->cmd));
+		_write(1, ", op '", 6);
+		_write(1, head->op, _strlen(head->op));
+		_write(1, "'\n", 2);
+		_write(1, NULL, 0);
 		head = head->next;
 	}
 	return (0);

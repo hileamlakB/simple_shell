@@ -42,7 +42,16 @@ int print_aliass(alias *head)
 		return (-1);
 	while (head)
 	{
-		printf("alias %s='%s'\n", head->key, head->value);
+
+
+		_write(-1, NULL, 0);
+		_write(1, "alias ", 6);
+		_write(1, head->key, _strlen(head->key));
+		_write(1, "='", 2);
+		_write(1, head->value, _strlen(head->value));
+		_write(1, "'\n", 2);
+		_write(1, NULL, 0);
+
 		head = head->next;
 	}
 	return (0);
@@ -61,12 +70,18 @@ int print_alias(alias *head, char *key)
 	{
 		if (!_strcmp(head->key, key))
 		{
-			printf("alias %s='%s'\n", head->key, head->value);
+			_write(-1, NULL, 0);
+			_write(1, "alias ", 6);
+			_write(1, head->key, _strlen(head->key));
+			_write(1, "='", 2);
+			_write(1, head->value, _strlen(head->value));
+			_write(1, "'\n", 2);
+			_write(1, NULL, 0);
 			return (0);
 		}
 		head = head->next;
 	}
-	perror("alias key not found");
+	perr(NULL, NULL, "Alias not found");
 	return (-1);
 }
 

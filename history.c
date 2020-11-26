@@ -7,11 +7,10 @@
  */
 int whistory(char *history)
 {
-	char *filename, *h = getenv("HOME");
+	char *filename, *h = _getenv("HOME");
 	char *tmp = NULL;
 	ssize_t w, fd;
 	int len = _strlen(history);/* first = 0;*/
-
 
 	filename = smalloc(_strlen(h) + _strlen(".simple_shell_history") + 4);
 	_strcpy(filename, h), _strcat(filename, "/.simple_shell_history");
@@ -27,7 +26,7 @@ int whistory(char *history)
 	 *		w = read(fd, tmp, 1);
 	 *		while (w > 0 && *history != '\n' )
 	 *			w = read(fd, history, 1);
-	 *		atoi(tmp);
+	 *		_atoi(tmp);
 	 *	}
 	 */
 	if (len)
@@ -54,10 +53,12 @@ int whistory(char *history)
  */
 int phistory(void)
 {
-	char *filename, *h = getenv("HOME");
-	char *history = calloc(4, 1);
+	char *filename, *h = _getenv("HOME");
+	char *history = smalloc(4);
 	int fd, w = 1;
 	int counter = 0;
+	char *istr =  NULL;
+
 
 	filename = smalloc(_strlen(h) + _strlen(".simple_shell_history") + 4);
 	_strcpy(filename, h);
@@ -70,14 +71,22 @@ int phistory(void)
 		counter++;
 		w = read(fd, history, 1);
 		if (w > 0)
-			printf("   %i  ", counter);
+		{
+			_write(-1, NULL, 0), _write(1, "   ", 3);
+			istr = itoa(counter);
+			_write(1, istr, _strlen(istr)),	_write(1, "  ", 2);
+			_write(1, NULL, 0), free(istr);
+		}
+		_write(-1, NULL, 0);
 		while (w > 0 && *history != '\n')
 		{
-			printf("%s", history);
+			_write(-1, NULL, 0);
+			_write(1, history, _strlen(history));
 			w = read(fd, history, 1);
 		}
 		if (w > 0 && *history == '\n')
-			printf("\n");
+			_write(1, "\n", 1);
+		_write(1, NULL, 0);
 	}
 	free(filename);
 	free(history);

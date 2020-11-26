@@ -9,19 +9,19 @@
 int _chdir(char *path)
 {
 	int status;
-	char *currentdir = getenv("PWD"), *buf = NULL;
+	char *currentdir = _getenv("PWD"), *buf = NULL;
 	size_t size = 0;
 
 	if (!path || !_strcmp(path, "~"))
-		status = chdir(getenv("HOME"));
+		status = chdir(_getenv("HOME"));
 	else if (!_strcmp(path, "-"))
-		status = chdir(getenv("OLDPWD"));
+		status = chdir(_getenv("OLDPWD"));
 	else
 		status = chdir(path);
-	if (status < -1)
+	if (status < 0)
 	{
 
-		perror("Couldn't change directory");
+		perr(NULL, NULL, "Couldn't change directory");
 		return (-1);
 	}
 
@@ -38,17 +38,38 @@ int _chdir(char *path)
  */
 int runscript(char *name)
 {
-	char *path = NULL;
+	char *path = NULL, *currentdir = NULL;
+	int fd, i, cmdslen;
+	size_t len = 0;
+	char *input, **cmds;
+	alias *head = NULL;
 
-	path = realpath(name, NULL);
-	if (!path)
+	if (name[0] != '.' && name[0] != '~' && name[0] != '/')
 	{
-		perror("No such file or directory");
+		currentdir = _getenv("PWD");
+		path = smalloc(_strlen(currentdir) + _strlen(name) + 4);
+		_strcpy(path, currentdir);
+		_strcat(path, "/");
+		_strcat(path, name);
+	}
+	else
+		path = name;
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+	{
+		free(path);
+		perr(NULL, NULL, "Couln't open script");
 		return (-1);
 	}
-	system(path);
 	free(path);
 
+	getinput(&input, &len, &cmds, fd);
+	i = 0, cmdslen = arlen(cmds);
+	free(input);
+	while (i < cmdslen)
+		xcmd(cmds, i, &head), i++;
+	if (cmdslen > 0)
+		freedp(cmds);
 	return (0);
 
 }
@@ -70,7 +91,7 @@ inline int execute(char **tmp)
 	else
 	{
 		exitstat = -1;
-		perror("Command not found");
+		perr(NULL, NULL, "Command not found");
 	}
 	free(fpath);
 	return (exitstat);

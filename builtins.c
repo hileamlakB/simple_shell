@@ -16,7 +16,7 @@ int *handlebin(char **cmd, alias **head)
 	if (!_strcmp(cmd[0], "exit"))
 	{
 		if (cmd[1])
-			exitstatus = atoi(cmd[1]) % 256;
+			exitstatus = _atoi(cmd[1]) % 256;
 		ret[0] = 0, ret[1] = exitstatus;
 	}
 	else if (!_strcmp(cmd[0], "env") || !_strcmp(cmd[0], "printenv"))
@@ -26,13 +26,13 @@ int *handlebin(char **cmd, alias **head)
 	else if (!_strcmp(cmd[0], "setenv"))
 	{
 		if (arlen(cmd) != 3)
-			perror("Too few or too many arguements");
+			perr(NULL, NULL, "Too few or too many arguements");
 		_setenv(cmd[1], cmd[2], 0), ret[0] = 0;
 	}
 	else if (!_strcmp(cmd[0], "unsetenv"))
 	{
 		if (arlen(cmd) != 2)
-			perror("Too few or too many arguements");
+			perr(NULL, NULL, "Too few or too many arguements");
 		_unsetenv(cmd[1]), ret[0] = 0;
 	}
 	else if (!_strcmp(cmd[0], "cd"))

@@ -18,7 +18,7 @@ int strexpand(char **str, int childstat)
 		fnrep(str, "$$", pid), fnrep(str, "$?", stat);
 	free(pid), free(stat);
 	var[0] = 'k', var[1] = '\0';
-	while (*(*str + i))
+	while (*(*str + i))/*replace any invironmental variables if any*/
 	{
 		if (*(*str + i) == '$' && *str + i + 1)
 		{
@@ -33,7 +33,7 @@ int strexpand(char **str, int childstat)
 						break;
 					j++;
 				}
-				tmp = smalloc(_strlen(var)), _strcpy(tmp, var + 1), rep = getenv(tmp);
+				tmp = smalloc(_strlen(var)), _strcpy(tmp, var + 1), rep = _getenv(tmp);
 				if (rep)
 					fnrep(str, var, rep);
 				free(var), free(tmp);

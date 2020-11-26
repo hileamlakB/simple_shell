@@ -47,13 +47,16 @@ typedef struct alias
 	struct alias *next;
 } alias;
 
+/*gbk*/
+
+void cmdmv(cmdnode **, int);
+void xcmd(char **, int, alias **);
 
 /*gbk_utils*/
 
 char *getfpath(char *);
 void parseargs(char *, const char *, char ***, int);
-int getinput(char **, size_t *, char ***);
-void _printenv(void);
+int getinput(char **, size_t *, char ***, int);
 void trims(char **, char *);
 
 /*builtins*/
@@ -70,6 +73,8 @@ void *srealloc(void *, unsigned int);
 
 /*memory_utils*/
 char **sarrdup(char **);
+void printdp(char **);
+
 /*string_advanced_utils*/
 
 int _getline(char **, size_t *, int);
@@ -95,6 +100,8 @@ char *_strcpy(char *, char *);
 int _putenv(char *);
 int _setenv(const char *, const char *, int);
 int _unsetenv(const char *);
+char *_getenv(const char *);
+void _printenv(void);
 
 /*sys_utils*/
 int _chdir(char *);
@@ -124,6 +131,7 @@ cmdnode *add_nodein(cmdnode **, char *, char *, int);
 
 /*num_utils*/
 char *itoa(int);
+int _atoi(char *);
 
 /*help*/
 void phelp(char *arg);
@@ -131,6 +139,13 @@ void phelp(char *arg);
 /*history*/
 int phistory(void);
 int whistory(char *);
+
+/*printing_utils*/
+int _write(int, char *, int);
+
+/*error_utils*/
+void perr(char *, int *, char *);
+
 /*externs*/
 extern char **environ;
 #endif
