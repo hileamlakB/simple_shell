@@ -39,7 +39,7 @@ int main(int argc, char **argv, char **argp)
 		if (cmdnum > 0)
 			freedp(cmds);
 		if (mode)
-			write(1, "#cisfun$ ", 9), exit(255);
+			exit(255);
 	}
 	free(environ);
 	exit(EXIT_SUCCESS);

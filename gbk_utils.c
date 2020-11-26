@@ -81,7 +81,8 @@ int getinput(char **input, size_t *inputlen, char ***cmds)
 {
 	int len;
 
-	write(1, "#cisfun$ ", 9);
+	if (isatty(0))
+		write(1, "($)", 3);
 	len = _getline(input, inputlen, 0);
 	if (len == -1)
 	{
