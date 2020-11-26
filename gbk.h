@@ -148,4 +148,7 @@ void perr(char *, int *, char *);
 
 /*externs*/
 extern char **environ;
+
+/*global variables*/
+
 #endif

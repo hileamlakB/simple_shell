@@ -41,9 +41,12 @@ int main(int argc, char **argv, char **argp)
 		if (cmdnum > 0)
 			freedp(cmds);
 		if (mode)
+		{
+			freedp(environ);
 			exit(255);
+		}
 	}
-	free(environ);
+	freedp(environ);
 	exit(EXIT_SUCCESS);
 }
 
