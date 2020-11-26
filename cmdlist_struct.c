@@ -92,7 +92,13 @@ int print_cmdnodes(cmdnode *head)
 		return (-1);
 	while (head)
 	{
-		printf("cmd %s, op'%s'\n", head->cmd, head->op);
+		_write(-1, NULL, 0);
+		_write(1, "cmd ", 4);
+		_write(1, head->cmd, _strlen(head->cmd));
+		_write(1, ", op '", 6);
+		_write(1, head->op, _strlen(head->op));
+		_write(1, "'\n", 2);
+		_write(1, NULL, 0);
 		head = head->next;
 	}
 	return (0);
@@ -153,30 +159,30 @@ cmdnode *add_nodein(cmdnode **head, char *cmd, char *operator, int pos)
 /*
  *int main(void)
  *{
- *	char *cmd = malloc(_strlen("ls||cat file && grep io *||op
+ *char *cmd = malloc(_strlen("ls||cat file && grep io *||op
  *&& pop && kl") + 3);
- *	cmdnode *none;
- *	char *cmd2 = malloc(_strlen("ls||none||cat file&&grep||io *
+ *cmdnode *none;
+ *char *cmd2 = malloc(_strlen("ls||none||cat file&&grep||io *
  *||op&&pop&&kl||pol&&kl||po") + 3);
- *	cmdnode *none2;
+ *cmdnode *none2;
  *
  *
- *	printf("ls||cat file && grep io *||op && pop && kl\n");
- *	_strcpy(cmd, "ls||cat file && grep io *||op && pop && kl");
- *	none = build_list(cmd);
- *	print_cmdnodes(none);
- *	free_cmdlist(none);
+ *printf("ls||cat file && grep io *||op && pop && kl\n");
+ *_strcpy(cmd, "ls||cat file && grep io *||op && pop && kl");
+ *none = build_list(cmd);
+ *print_cmdnodes(none);
+ *free_cmdlist(none);
  *
- *	printf("\n\nls||none||cat file&&grep||io *||op&&pop&&kl
+ *printf("\n\nls||none||cat file&&grep||io *||op&&pop&&kl
  *||pol&&kl||po\n");
- *	_strcpy(cmd2, "ls||none||cat file&&grep||io *||op&&pop&&kl
+ *_strcpy(cmd2, "ls||none||cat file&&grep||io *||op&&pop&&kl
  *||pol&&kl||po");
- *	none2 = build_list(cmd2);
- *	print_cmdnodes(none2);
- *	free_cmdlist(none2);
+ *none2 = build_list(cmd2);
+ *print_cmdnodes(none2);
+ *free_cmdlist(none2);
  *
- *	free(cmd), free(cmd2);
+ *free(cmd), free(cmd2);
  *
- *	return (0);
+ *return (0);
  *}
  */

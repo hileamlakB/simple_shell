@@ -42,7 +42,16 @@ int print_aliass(alias *head)
 		return (-1);
 	while (head)
 	{
-		printf("alias %s='%s'\n", head->key, head->value);
+
+
+		_write(-1, NULL, 0);
+		_write(1, "alias ", 6);
+		_write(1, head->key, _strlen(head->key));
+		_write(1, "='", 2);
+		_write(1, head->value, _strlen(head->value));
+		_write(1, "'\n", 2);
+		_write(1, NULL, 0);
+
 		head = head->next;
 	}
 	return (0);
@@ -61,12 +70,18 @@ int print_alias(alias *head, char *key)
 	{
 		if (!_strcmp(head->key, key))
 		{
-			printf("alias %s='%s'\n", head->key, head->value);
+			_write(-1, NULL, 0);
+			_write(1, "alias ", 6);
+			_write(1, head->key, _strlen(head->key));
+			_write(1, "='", 2);
+			_write(1, head->value, _strlen(head->value));
+			_write(1, "'\n", 2);
+			_write(1, NULL, 0);
 			return (0);
 		}
 		head = head->next;
 	}
-	perror("alias key not found");
+	perr(NULL, NULL, "Alias not found");
 	return (-1);
 }
 
@@ -131,34 +146,34 @@ int freealias(alias *head)
  *int main (void)
  *{
  *
- *	alias *head = NULL;
- *	char **arg = malloc(sizeof(char *) * 6);
- *	arg[0] = malloc(_strlen("alias") + 3);
- *	_strcpy(arg[0], "alias");
+ *alias *head = NULL;
+ *char **arg = malloc(sizeof(char *) * 6);
+ *arg[0] = malloc(_strlen("alias") + 3);
+ *_strcpy(arg[0], "alias");
  *
- *	arg[1] = malloc(_strlen("ls") + 3);
- *	_strcpy(arg[1], "ls");
+ *arg[1] = malloc(_strlen("ls") + 3);
+ *_strcpy(arg[1], "ls");
  *
- *	arg[2] = malloc(_strlen("lk=lm") + 3);
- *	_strcpy(arg[2], "lk=lm");
+ *arg[2] = malloc(_strlen("lk=lm") + 3);
+ *_strcpy(arg[2], "lk=lm");
  *
- *	arg[3] = malloc(_strlen("third") + 3);
- *	_strcpy(arg[3], "third");
+ *arg[3] = malloc(_strlen("third") + 3);
+ *_strcpy(arg[3], "third");
  *
- *	arg[4] = malloc(_strlen("pl") + 3);
- *	_strcpy(arg[4], "pl");
+ *arg[4] = malloc(_strlen("pl") + 3);
+ *_strcpy(arg[4], "pl");
  *
- *	arg[5] = NULL;
- *	don't add before you check that the string isnt on your alias list
- *	add_alias(&head, "new", "call");
- *	add_alias(&head, "secon", "mkdir");
- *	add_alias(&head, "third", "push");
- *	add_alias(&head, "fourth", "pop");
- *	add_alias(&head, "fifth", "lop");
- *	handle_alias(arg, head);
- *	printf("\n");
- *	print_aliass(head);
- *	freedp(arg), freealias(head);
- *	return (1);
+ *arg[5] = NULL;
+ *don't add before you check that the string isnt on your alias list
+ *add_alias(&head, "new", "call");
+ *add_alias(&head, "secon", "mkdir");
+ *add_alias(&head, "third", "push");
+ *add_alias(&head, "fourth", "pop");
+ *add_alias(&head, "fifth", "lop");
+ *handle_alias(arg, head);
+ *printf("\n");
+ *print_aliass(head);
+ *freedp(arg), freealias(head);
+ *return (1);
  *}
  */
