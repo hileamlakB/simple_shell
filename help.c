@@ -9,7 +9,6 @@ void phelp(char *arg)
 	int fd = 1;
 
 	_write(-1, NULL, 0);/*open a printed*/
-
 	if (!arg)
 		_write(1, ghelp, _strlen(ghelp));
 	else if (!_strcmp(arg, "help"))

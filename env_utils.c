@@ -83,9 +83,9 @@ int _unsetenv(const char *name)
 	for (ep = environ; *ep != NULL; )
 		if (_strcmp(*ep, (char *)name) == 0 && (*ep)[len] == '=')
 			/*
-			*Remove found entry by shifting
-			*all successive entries back one element
-			*/
+			 *Remove found entry by shifting
+			 *all successive entries back one element
+			 */
 			for (sp = ep; *sp != NULL; sp++)
 				*sp = *(sp + 1);
 		else

@@ -36,11 +36,11 @@ int *handlebin(char **cmd, alias **head)
 		_unsetenv(cmd[1]), ret[0] = 0;
 	}
 	else if (!_strcmp(cmd[0], "cd"))
-		_chdir(arlen(cmd) > 1 ? cmd[1] : NULL),	ret[0] = 0;
+		_chdir(arlen(cmd) > 1 ? cmd[1] : NULL), ret[0] = 0;
 	else if (!_strcmp(cmd[0], "history"))
 		phistory(), ret[0] = 0;
 	else if (!_strcmp(cmd[0], "help"))
-		phelp(arlen(cmd) > 1 ? cmd[1] : NULL),	ret[0] = 0;
+		phelp(arlen(cmd) > 1 ? cmd[1] : NULL), ret[0] = 0;
 	else if (!_strcmp(cmd[0], "alias"))
 		handle_alias(cmd, head), ret[0] = 0;
 
