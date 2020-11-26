@@ -111,8 +111,6 @@ void cmdmv(cmdnode **head, int childstat)
  *@cmd_l: commands list
  *@index: current command index
  *@aliashead: head of the laias list
- *@prog: name of the program
- *@rcmds: number of commands that has already run
  */
 void xcmd(char **cmd_l, int index, alias **aliashead)
 {
@@ -177,3 +175,4 @@ void xcmd(char **cmd_l, int index, alias **aliashead)
 	}
 	free_cmdlist(_head);
 }
+

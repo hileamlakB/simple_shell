@@ -72,20 +72,10 @@ int phistory(void)
 		w = read(fd, history, 1);
 		if (w > 0)
 		{
-<<<<<<< HEAD
 			_write(-1, NULL, 0), _write(1, "   ", 3);
 			istr = itoa(counter);
 			_write(1, istr, _strlen(istr)),	_write(1, "  ", 2);
 			_write(1, NULL, 0), free(istr);
-=======
-			_write(-1, NULL, 0);
-			_write(1, "   ", 3);
-			istr = itoa(counter);
-			_write(1, istr, _strlen(istr));
-			_write(1, "  ", 2);
-			_write(1, NULL, 0);
-			free(istr);
->>>>>>> 4ab7234153d71dcf94d1621ba41731f21cf9f673
 		}
 		_write(-1, NULL, 0);
 		while (w > 0 && *history != '\n')
