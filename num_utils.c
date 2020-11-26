@@ -54,7 +54,7 @@ char *itoa(int n)
 		return (NULL);
 	if (n < 0)
 		n *= -1, *(nums + i) = '-', i++;
-	num = n, length = numLength(num), j = length - 1, k, digit1, tmp2;
+	num = n, length = numLength(num), j = length - 1;
 	if (num == 0)
 		nums[i] = 48, i++;
 	else

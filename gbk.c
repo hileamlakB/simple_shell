@@ -1,8 +1,8 @@
 #include "gbk.h"
 
 static void handlerc(int);
-inline void cmdmv(cmdnode **, int);
-inline void xcmd(char **, int, alias **);
+void cmdmv(cmdnode **, int);
+void xcmd(char **, int, alias **);
 /**
  *main - main loop for the gbk shell
  *@argc: number of arguments
