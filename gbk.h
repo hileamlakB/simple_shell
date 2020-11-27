@@ -3,7 +3,6 @@
 
 /*necessary libs*/
 #include <stdlib.h>
-#include <stdio.h>
 
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -13,7 +12,6 @@
 #include <signal.h>
 #include <errno.h>
 #include <fcntl.h>
-
 /*Variables*/
 #define BUFFER_t 1024
 

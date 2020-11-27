@@ -80,7 +80,6 @@ int phistory(void)
 		_write(-1, NULL, 0);
 		while (w > 0 && *history != '\n')
 		{
-			_write(-1, NULL, 0);
 			_write(1, history, _strlen(history));
 			w = read(fd, history, 1);
 		}

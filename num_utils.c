@@ -108,13 +108,3 @@ int _atoi(char *s)
 	}
 	return (sign * num);
 }
-
-/*
- *int main(void)
- *{
- *	char *str = NULL;
- *	str = itoa(-106988870);
- *	printf("%s\n", str);
- *	return (1);
- *}
- */

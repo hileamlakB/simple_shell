@@ -51,15 +51,3 @@ int strexpand(char **str, int childstat)
 	free(var);
 	return (0);
 }
-/*
- *int main(void)
- *{
- *	char *str = calloc(26, sizeof(char));
- *
- *	_strcpy(str, "echo $coled $$ $PATH $HOME $? # lotss\0");
- *	strexpand(&str, 90);
- *	printf("%s\n", str);
- *	free(str);
- *	return (0);
- *}
- */

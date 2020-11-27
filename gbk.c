@@ -122,12 +122,13 @@ void xcmd(char **cmd_l, int index, alias **aliashead)
 	static int childstat;
 	cmdnode *head = NULL, *_head = NULL;
 
+	/*write the command to history*/
+	whistory(cmds);
 	_head = build_list(cmds), head = _head;
 	while (head)
 	{
 		strexpand(&(head->cmd), childstat);
 		parseargs(head->cmd, " ", &tmp, 0);
-		whistory(cmds);
 		binstat = handlebin(tmp, aliashead);
 		if (!binstat[0])
 		{
@@ -144,7 +145,6 @@ void xcmd(char **cmd_l, int index, alias **aliashead)
 		free(binstat);
 		if (head->estat == 0)
 		{
-			fflush(stdout);
 			childid = fork();
 			if (childid < 0)
 			{
