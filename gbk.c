@@ -43,11 +43,11 @@ int main(int argc, char **argv, char **argp)
 		if (mode)
 		{
 			freedp(environ);
-			exit(255);
+			return (255);
 		}
 	}
 	freedp(environ);
-	exit(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 
 /**
