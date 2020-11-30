@@ -1,4 +1,6 @@
 #include "gbk.h"
+#define l(x) _strlen((x))
+#define cch const char
 
 /**
  *_putenv - addes es to environ
@@ -7,7 +9,6 @@
  */
 int _putenv(char *es)
 {
-
 	char **_environ = environ, **newenviron, **_newenviron;
 	int len = 0;
 
@@ -41,27 +42,46 @@ int _putenv(char *es)
  *@overwrite: overwrite status
  *Return: 0 on secuss and -1 on faliure
  */
-int _setenv(const char *name, const char *value, int overwrite)
+int _setenv(cch *name, cch *value, __attribute__((unused))int overwrite)
 {
-	char *es;
+	char *es, **ep, *var;
+	int i = 0;
 
 	if (name == NULL || name[0] == '\0' || value == NULL)
 		return (-1);
 
-	if (_getenv(name) != NULL && overwrite == 0)
-		return (0);
-	if (overwrite)
-		_unsetenv(name);
+	/*check  if the var already exists and overwrite is allowed*/
+	/**
+	 *if (_getenv(name) != NULL && overwrite == 0)
+	 *		return (0);
+	 *
+	 */
+	if (environ)
+	{
+		ep = sarrdup(environ);
+		while (ep[i])
+		{
 
+			var = _strtok(ep[i], "=", 0);
+			if (!_strcmp(var, (char *)name))
+			{
+				free(environ[i]);
+				environ[i] = smalloc(l(name) + l(value) + 4);
+				_strcpy(environ[i], (char *)name);
+				_strcat(environ[i], "=");
+				_strcat(environ[i], (char *)value);
+				freedp(ep);
+				return (0);
+			}
+			i++;
+		}
+		freedp(ep);
+	}
 	es = smalloc(_strlen(name) + _strlen(value) + 2);
 	/* +2 for '=' and null terminator */
 	if (es == NULL)
 		return (-1);
-
-	_strcpy(es, (char *)name);
-	_strcat(es, "=");
-	_strcat(es, (char *)value);
-
+	_strcpy(es, (char *)name), _strcat(es, "="), _strcat(es, (char *)value);
 	return ((_putenv(es) != 0) ? -1 : 0);
 }
 
@@ -72,25 +92,26 @@ int _setenv(const char *name, const char *value, int overwrite)
  */
 int _unsetenv(const char *name)
 {
-	char **ep, **sp;
-	size_t len;
+	char **ep, **sp, *var, *value;
 
-	if (name == NULL || name[0] == '\0' || findd((char *)name, "=") != 0)
+	if (name == NULL || name[0] == '\0')
 		return (-1);
+	ep = sarrdup(environ);
+	freedp(environ);
+	environ = smalloc(sizeof(char *));
 
-	len = _strlen(name);
+	for (sp = ep; *sp != NULL; )
+	{
 
-	for (ep = environ; *ep != NULL; )
-		if (_strcmp(*ep, (char *)name) == 0 && (*ep)[len] == '=')
-			/*
-			*Remove found entry by shifting
-			*all successive entries back one element
-			*/
-			for (sp = ep; *sp != NULL; sp++)
-				*sp = *(sp + 1);
-		else
-			ep++;
-
+		var = _strtok(*sp, "=", 0);
+		if (_strcmp(var, (char *)name))
+		{
+			value = _strtok(NULL, "=", 0);
+			_setenv(var, value, 1);
+		}
+		sp++;
+	}
+	freedp(ep);
 	return (0);
 }
 
@@ -101,6 +122,8 @@ void _printenv(void)
 {
 	char **_env = environ;
 
+	if (!_env)
+		return;
 	_write(-1, NULL, 0);
 	while (*_env)
 	{
