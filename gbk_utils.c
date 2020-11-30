@@ -101,7 +101,7 @@ int getinput(char **input, size_t *inputlen, char ***cmds, int fd)
 	if (len == -1)
 	{
 		free(*input);
-		exit(-1);
+		exit(0);
 	}
 	/*replace the ending new line with \0*/
 	(*input)[len - 1] = '\0';

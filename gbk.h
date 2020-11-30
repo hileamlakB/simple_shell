@@ -48,7 +48,7 @@ typedef struct alias
 /*gbk*/
 
 void cmdmv(cmdnode **, int);
-void xcmd(char **, int, alias **);
+int xcmd(char **, int, alias **);
 
 /*gbk_utils*/
 
@@ -115,6 +115,9 @@ int print_aliass(alias *);
 int print_alias(alias *, char *);
 int handle_alias(char **, alias **);
 int freealias(alias *);
+
+/*alas2*/
+void aliasexpand(char **, alias *);
 
 /*unalias*/
 

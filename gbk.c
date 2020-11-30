@@ -1,8 +1,9 @@
 #include "gbk.h"
+#include <stdio.h>
 
 static void handlerc(int);
 void cmdmv(cmdnode **, int);
-void xcmd(char **, int, alias **);
+int xcmd(char **, int, alias **);
 /**
  *main - main loop for the gbk shell
  *@argc: number of arguments
@@ -14,18 +15,19 @@ int main(int argc, char **argv, char **argp)
 {
 	char *cmd = NULL, **cmds = NULL;
 	size_t cmdlen = 0;
-	int mode = !isatty(0), i = 0, cmdnum = 1, inputs = 0;
+	int mode = !isatty(0), i = 0, cmdnum = 1, inputs = 0, ret;
 	alias *head = NULL;
 
+	/*initialize erro function*/
+	perr(argv[0], &inputs, NULL);
 	/*initialize environmental variables*/
 	environ = sarrdup(argp);
 	if (argc > 1)
 	{
-		runscript(argv[1]);
-		exit(0);
+		ret = runscript(argv[1]);
+		freedp(environ);
+		exit(ret);
 	}
-	/*initialize erro function*/
-	perr(argv[0], &inputs, NULL);
 	/*initialize signal handler*/
 	signal(SIGINT, handlerc);
 	while (1)
@@ -37,17 +39,17 @@ int main(int argc, char **argv, char **argp)
 		inputs++;/*increase the number of commands accepted*/
 		/*execute all the commands one by one*/
 		while (i < cmdnum)
-			xcmd(cmds, i, &head), i++;
+			ret = xcmd(cmds, i, &head), i += 1;
 		if (cmdnum > 0)
 			freedp(cmds);
 		if (mode)
 		{
-			freedp(environ);
-			return (0);
+			freedp(environ), freealias(head);
+			return (ret);
 		}
 	}
-	freedp(environ);
-	return (0);
+	freedp(environ), freealias(head);
+	return (ret);
 }
 
 /**
@@ -96,13 +98,20 @@ void cmdmv(cmdnode **head, int childstat)
 			(*head)->estat = 1, (*head) = (*head)->next;
 		else
 		{
-			free((*head)->op);
-			(*head)->op = (*head)->next->op;
-			tmp = (*head)->next->next;
-
-			free((*head)->next->cmd);
-			free((*head)->next);
-			(*head)->next = tmp;
+			while ((*head))
+			{
+				if (!((*head)->next))
+				{
+					*head = (*head)->next;
+					break;
+				}
+				if (!_strcmp((*head)->next->op, "||"))
+				{
+					(*head) = (*head)->next;
+					break;
+				}
+				*head = (*head)->next;
+			}
 		}
 	}
 	else
@@ -114,20 +123,23 @@ void cmdmv(cmdnode **head, int childstat)
  *@cmd_l: commands list
  *@index: current command index
  *@aliashead: head of the laias list
+ *Return: the exetstatus of the execution
  */
-void xcmd(char **cmd_l, int index, alias **aliashead)
+int xcmd(char **cmd_l, int index, alias **aliashead)
 {
 	char **tmp = NULL, *cmds = cmd_l[index];
-	int childid, *binstat, exitstat;
-	static int childstat;
-	cmdnode *head = NULL, *_head = NULL;
+	int childid, *binstat;
+	static int childstat, exitstat;
+	cmdnode *head = NULL, *_head = NULL, *tmp_n = NULL;
+
 
 	/*write the command to history*/
 	whistory(cmds);
 	_head = build_list(cmds), head = _head;
 	while (head)
 	{
-		strexpand(&(head->cmd), childstat);
+		strexpand(&(head->cmd), exitstat);
+		aliasexpand(&(head->cmd), *aliashead);
 		parseargs(head->cmd, " ", &tmp, 0);
 		binstat = handlebin(tmp, aliashead);
 		if (!binstat[0])
@@ -136,7 +148,7 @@ void xcmd(char **cmd_l, int index, alias **aliashead)
 			{
 				exitstat = binstat[1];
 				freedp(environ), free(binstat), freedp(tmp);
-				freedp(cmd_l), free_cmdlist(_head);
+				freedp(cmd_l), free_cmdlist(_head), freealias(*aliashead);
 				exit(exitstat);
 			}
 			cmdmv(&head, 0), free(binstat);
@@ -149,27 +161,33 @@ void xcmd(char **cmd_l, int index, alias **aliashead)
 			if (childid < 0)
 			{
 				perr(NULL, NULL, "Coudn't creat a child proccess");
-				exit(-1);
+				exit(127);
 			}
 			if (childid == 0)
 			{
 				childstat = execute(tmp);
-				freedp(environ), freedp(tmp), freedp(cmd_l), free_cmdlist(_head);
+				freedp(environ), freealias(*aliashead);
+				freedp(tmp), freedp(cmd_l), free_cmdlist(_head);
 				exit(childstat);
 			}
 			else
 			{
 				wait(&childstat);
-				cmdmv(&head, childstat);
+				if (WIFEXITED(childstat))
+					exitstat = WEXITSTATUS(childstat);
+				cmdmv(&head, exitstat);
 			}
 		}
-		else
+		else if (head->estat == 1)
 		{
 			if (!_strcmp(head->op, "||"))
 			{
 				free(head->op);
 				head->op = head->next->op;
-				head->next = head->next->next;
+				tmp_n = head->next->next;
+				free(head->next->cmd);
+				free(head->next);
+				head->next = tmp_n;
 			}
 			else
 				head = head->next;
@@ -177,5 +195,6 @@ void xcmd(char **cmd_l, int index, alias **aliashead)
 		freedp(tmp);
 	}
 	free_cmdlist(_head);
+	return (exitstat);
 }
 
