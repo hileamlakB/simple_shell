@@ -9,6 +9,8 @@ void freedp(char **a)
 {
 	char **_a = a;
 
+	if (!a)
+		return;
 	while (*_a)
 	{
 		free(*_a);
