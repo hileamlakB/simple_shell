@@ -25,7 +25,17 @@ int add_alias(alias **head, char *key, char *value)
 	}
 	_head = *head;
 	while (_head->next)
+	{
+		if (!_strcmp(_head->key, key))
+		{
+			free(_head->value);
+			_head->value = _strdup(value);
+			freealias(node);
+			return (0);
+		}
 		_head = _head->next;
+
+	}
 	_head->next = node;
 	return (0);
 }
@@ -45,7 +55,6 @@ int print_aliass(alias *head)
 
 
 		_write(-1, NULL, 0);
-		_write(1, "alias ", 6);
 		_write(1, head->key, _strlen(head->key));
 		_write(1, "='", 2);
 		_write(1, head->value, _strlen(head->value));
@@ -71,7 +80,6 @@ int print_alias(alias *head, char *key)
 		if (!_strcmp(head->key, key))
 		{
 			_write(-1, NULL, 0);
-			_write(1, "alias ", 6);
 			_write(1, head->key, _strlen(head->key));
 			_write(1, "='", 2);
 			_write(1, head->value, _strlen(head->value));
@@ -81,6 +89,7 @@ int print_alias(alias *head, char *key)
 		}
 		head = head->next;
 	}
+	errno = -5;
 	perr(NULL, NULL, "Alias not found");
 	return (-1);
 }
