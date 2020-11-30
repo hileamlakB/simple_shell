@@ -8,7 +8,8 @@
 */
 int handle_exit(char **cmd)
 {
-	int exitstatus = 0;
+	int exitstatus = 0, i = 0, str_in = 0;
+	char *ermsg;
 
 	if (cmd[1])
 	{
@@ -50,9 +51,7 @@ int handle_exit(char **cmd)
  */
 int *handlebin(char **cmd, alias **head)
 {
-	int exitstatus = 0;
-	int *ret = smalloc(2 * sizeof(int)), i = 0, str_in = 0;
-	char *ermsg;
+	int *ret = smalloc(2 * sizeof(int));
 
 	ret[0] = 1, ret[1] = 266;
 	if (!cmd)
@@ -87,6 +86,7 @@ int *handlebin(char **cmd, alias **head)
 		phelp(arlen(cmd) > 1 ? cmd[1] : NULL),	ret[0] = 0;
 	else if (!_strcmp(cmd[0], "alias"))
 		handle_alias(cmd, head), ret[0] = 0;
+
 	if (!ret[0] && ret[1] == 266)
 		freedp(cmd);
 	return (ret);

@@ -9,7 +9,7 @@
 int _chdir(char *path)
 {
 	int status;
-	char *currentdir = _getenv("PWD"), *buf = NULL;
+	char *currentdir = _getenv("PWD"), *buf = NULL, *cdir, *errmsg;
 	size_t size = 0;
 
 	if (!path || !_strcmp(path, "~"))
@@ -20,13 +20,19 @@ int _chdir(char *path)
 		status = chdir(path);
 	if (status < 0)
 	{
-
-		perr(NULL, NULL, "Couldn't change directory");
+		errno = -3;
+		errmsg = smalloc(_strlen("cd: can't cd to ") + _strlen(path) + 4);
+		_strcpy(errmsg, "cd: can't cd to ");
+		_strcat(errmsg, path);
+		perr(NULL, NULL, errmsg);
+		free(errmsg);
 		return (-1);
 	}
 
 	_setenv("OLDPWD", currentdir, 1);
-	_setenv("PWD", getcwd(buf, size), 1);
+	cdir = getcwd(buf, size);
+	_setenv("PWD", cdir, 1);
+	free(buf), free(cdir);
 	return (0);
 }
 
@@ -39,9 +45,9 @@ int _chdir(char *path)
 int runscript(char *name)
 {
 	char *path = NULL, *currentdir = NULL;
-	int fd, i, cmdslen;
+	int fd, i, cmdlen;
 	size_t len = 0;
-	char *input, **cmds;
+	char *input, **cmds, *errmsg, **cmds2;
 	alias *head = NULL;
 
 	if (name[0] != '.' && name[0] != '~' && name[0] != '/')
@@ -57,21 +63,25 @@ int runscript(char *name)
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
+		errno = -3;
+		errmsg = smalloc(_strlen("Can't open ") + _strlen(name) + 4);
+		_strcpy(errmsg, "Can't open ");
+		_strcat(errmsg, name);
+		perr(NULL, NULL, errmsg);
+		free(errmsg);
 		free(path);
-		perr(NULL, NULL, "Couln't open script");
-		return (-1);
+		return (127);
 	}
 	free(path);
 
-	getinput(&input, &len, &cmds, fd);
-	i = 0, cmdslen = arlen(cmds);
-	free(input);
-	while (i < cmdslen)
-		xcmd(cmds, i, &head), i++;
-	if (cmdslen > 0)
-		freedp(cmds);
-	return (0);
+	getinput(&input, &len, &cmds, fd), fnrep(&(cmds[0]), "\n", ";");
+	parseargs(cmds[0], ";", &cmds2, 0), free(input), freedp(cmds);
 
+	i = 0, cmdlen = arlen(cmds2);
+	while (i < cmdlen)
+		xcmd(cmds2, i, &head), i++;
+	freedp(cmds2);
+	return (0);
 }
 
 /**
@@ -79,19 +89,22 @@ int runscript(char *name)
  *@tmp: a double pointer coanting all the arguments
  *Return: 0 on sucess and faliure number on failure
  */
-inline int execute(char **tmp)
+int execute(char **tmp)
 {
 	struct stat cmdinfo;
 	char *fpath = NULL;
 	int exitstat = 0;
 
+	if (!tmp)
+		return (exitstat);
 	fpath = getfpath(tmp[0]);
 	if (stat(fpath, &cmdinfo) == 0 && cmdinfo.st_mode & S_IXUSR)
 		exitstat = execve(fpath, tmp, environ);
 	else
 	{
-		exitstat = -1;
-		perr(NULL, NULL, "Command not found");
+		exitstat = 127;
+		errno = -4;
+		perr(NULL, NULL, "not found");
 	}
 	free(fpath);
 	return (exitstat);
